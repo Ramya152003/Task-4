@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All-in-One Portfolio</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #1e1e2f;
+      color: #f5f5f5;
+      transition: background 0.3s;
+    }
+
+    header {
+      background: #111;
+      color: #fdfdfd;
+      padding: 1em;
+      text-align: center;
+    }
+
+    nav {
+      background: #222;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav a {
+      color: white;
+      padding: 1em;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      background: #444;
+    }
+
+    section {
+      padding: 2em;
+      margin: 1em auto;
+      border-radius: 10px;
+      max-width: 1000px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    #about    { background: #2a2f4a; }
+    #projects { background: #3e2c3c; }
+    #todo     { background: #2f3e2f; }
+    #products { background: #4a3b27; }
+    #quiz     { background: #3e3a57; }
+    #carousel { background: #2d4b4f; }
+    #contact  { background: #4d2e2e; }
+
+    h2 {
+      color: #ffd54f;
+      text-align: center;
+      margin-bottom: 1em;
+    }
+
+    .grid {
+      display: grid;
+      gap: 2em;
+    }
+
+    @media (min-width: 768px) {
+      .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    #taskList li {
+      margin: 0.5em 0;
+    }
+
+    .product {
+      background: #fff;
+      color: #000;
+      border: 1px solid #ccc;
+      padding: 1em;
+      border-radius: 5px;
+    }
+
+    #carousel img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    button {
+      padding: 0.5em 1em;
+      margin: 0.5em 0.5em 0 0;
+      border: none;
+      border-radius: 5px;
+      background: #ff9800;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #fb8c00;
+    }
+
+    input, textarea, select {
+      padding: 0.5em;
+      width: 100%;
+      margin-bottom: 1em;
+      box-sizing: border-box;
+    }
+
+    .correct { background-color: #81c784; }
+    .wrong   { background-color: #e57373; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🌟 My Portfolio Website</h1>
+</header>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#projects">Projects</a>
+  <a href="#todo">To-Do</a>
+  <a href="#products">Products</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#carousel">Carousel</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<!-- About Section -->
+<section id="about">
+  <h2>👋 About Me</h2>
+  <p>Hi! I'm Ramya, a passionate front-end developer who loves crafting responsive designs, solving coding puzzles, and building interactive web experiences. I'm constantly learning and always excited to turn ideas into reality!</p>
+</section>
+
+<!-- Projects Section -->
+<section id="projects">
+  <h2>🛠 Projects</h2>
+  <ul>
+    <li>✅ Portfolio Website</li>
+    <li>✅ To-Do List App</li>
+    <li>✅ Blog Platform</li>
+    <li>✅ Interactive Quiz</li>
+    <li>✅ Image Carousel</li>
+  </ul>
+</section>
+
+<!-- To-Do Section -->
+<section id="todo">
+  <h2>📝 To-Do List</h2>
+  <input id="taskInput" placeholder="Add a new task..." />
+  <button onclick="addTask()">Add Task</button>
+  <ul id="taskList"></ul>
+</section>
+
+<!-- Product Listing Section -->
+<section id="products">
+  <h2>🛍 Product Listing</h2>
+  <label>Filter:</label>
+  <select id="filter" onchange="renderProducts()">
+    <option value="all">All</option>
+    <option value="books">Books</option>
+    <option value="tech">Tech</option>
+  </select>
+
+  <label>Sort:</label>
+  <select id="sort" onchange="renderProducts()">
+    <option value="asc">Low to High</option>
+    <option value="desc">High to Low</option>
+  </select>
+
+  <div class="grid grid-2" id="productGrid"></div>
+</section>
+
+<!-- Quiz Section -->
+<section id="quiz">
+  <h2>🧠 Quiz</h2>
+  <p id="question">Loading...</p>
+  <button onclick="choose('a')">Option A</button>
+  <button onclick="choose('b')">Option B</button>
+  <p id="quizResult"></p>
+  <p id="quizScore"></p>
+</section>
+
+<!-- Carousel Section -->
+<section id="carousel">
+  <h2>🖼 Image Carousel</h2>
+  <img id="carouselImage" src="https://via.placeholder.com/600x250?text=Image+1" />
+  <div>
+    <button onclick="prevImage()">Prev</button>
+    <button onclick="nextImage()">Next</button>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact">
+  <h2>📧 Contact Me</h2>
+  <form onsubmit="event.preventDefault(); alert('Message sent!')">
+    <input type="text" placeholder="Your Name" required />
+    <input type="email" placeholder="Your Email" required />
+    <textarea placeholder="Your Message" rows="4" required></textarea>
+    <button type="submit">Send</button>
+  </form>
+</section>
+
+<script>
+  // To-Do App
+  let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  const taskList = document.getElementById('taskList');
+  const taskInput = document.getElementById('taskInput');
+
+  function renderTasks() {
+    taskList.innerHTML = '';
+    tasks.forEach((t, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `${t} <button onclick="deleteTask(${i})">❌</button>`;
+      taskList.appendChild(li);
+    });
+  }
+
+  function addTask() {
+    const task = taskInput.value.trim();
+    if (task) {
+      tasks.push(task);
+      taskInput.value = '';
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
+  }
+
+  function deleteTask(i) {
+    tasks.splice(i, 1);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    renderTasks();
+  }
+
+  renderTasks();
+
+  // Product Listing
+  const products = [
+    { name: 'Wireless Mouse', category: 'tech', price: 20 },
+    { name: 'Headphones', category: 'tech', price: 50 },
+    { name: 'Notebook', category: 'books', price: 10 },
+    { name: 'JavaScript Guide', category: 'books', price: 30 }
+  ];
+
+  function renderProducts() {
+    const filter = document.getElementById('filter').value;
+    const sort = document.getElementById('sort').value;
+    let filtered = filter === 'all' ? [...products] : products.filter(p => p.category === filter);
+    filtered.sort((a, b) => sort === 'asc' ? a.price - b.price : b.price - a.price);
+
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = '';
+    filtered.forEach(p => {
+      grid.innerHTML += `<div class="product"><strong>${p.name}</strong><br>Category: ${p.category}<br>Price: $${p.price}</div>`;
+    });
+  }
+
+  renderProducts();
+
+  // Quiz Section
+  const quiz = [
+    { q: "What does CSS stand for?", a: "Cascading Style Sheets", b: "Creative Style System", correct: "a" },
+    { q: "Which symbol is used for comments in JavaScript?", a: "//", b: "##", correct: "a" },
+    { q: "Which method is used to convert JSON to a JavaScript object?", a: "JSON.parse()", b: "JSON.stringify()", correct: "a" },
+    { q: "What does DOM stand for?", a: "Document Object Model", b: "Data Output Method", correct: "a" }
+  ];
+  let currentQ = 0;
+  let score = 0;
+
+  function loadQuiz() {
+    const q = quiz[currentQ];
+    document.getElementById('question').textContent = q.q;
+    const btns = document.querySelectorAll("#quiz button");
+    btns[0].textContent = "A: " + q.a;
+    btns[1].textContent = "B: " + q.b;
+    btns.forEach(b => b.classList.remove("correct", "wrong"));
+    document.getElementById('quizResult').textContent = '';
+  }
+
+  function choose(ans) {
+    const correct = quiz[currentQ].correct;
+    const result = ans === correct ? "✅ Correct!" : "❌ Wrong!";
+    if (ans === correct) score++;
+
+    const btns = document.querySelectorAll("#quiz button");
+    btns[ans === 'a' ? 0 : 1].classList.add(ans === correct ? "correct" : "wrong");
+
+    document.getElementById('quizResult').textContent = result;
+    document.getElementById('quizScore').textContent = `Score: ${score}/${quiz.length}`;
+
+    currentQ = (currentQ + 1) % quiz.length;
+    setTimeout(loadQuiz, 1500);
+  }
+
+  loadQuiz();
+
+  // Carousel
+  const images = [
+    "https://img.etimg.com/thumb/width-1600,height-900,imgsize-50208,resizemode-75,msid-96359529/small-biz/trade/exports/insights/amazon-is-ubiquitous-but-it-isnt-invincible-anymore.jpg",
+    "https://m.media-amazon.com/images/G/01/primevideo/seo/primevideo-seo-logo.png",
+    "https://images.ctfassets.net/y2ske730sjqp/1aONibCke6niZhgPxuiilC/2c401b05a07288746ddf3bd3943fbc76/BrandAssets_Logos_01-Wordmark.jpg?w=940"
+  ];
+  let imgIndex = 0;
+  const carouselImage = document.getElementById('carouselImage');
+
+  function showImage() {
+    carouselImage.src = images[imgIndex];
+  }
+
+  function nextImage() {
+    imgIndex = (imgIndex + 1) % images.length;
+    showImage();
+  }
+
+  function prevImage() {
+    imgIndex = (imgIndex - 1 + images.length) % images.length;
+    showImage();
+  }
+</script>
+
+</body>
+</html>
